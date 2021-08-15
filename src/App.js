@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { Card } from "./components/card/Card";
+import { Header } from "./components/header/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getTodos } from "./store/action/todo/todo-action";
+import loading from "./loading.svg";
 
-function App() {
+const App = () => {
+  const isLoading = useSelector((state) => state.todoReducer.isLoading);
+  const todos = useSelector((state) => state.todoReducer.todos);
+  const statusCode = useSelector((state) => state.todoReducer.status_code);
+  const error = useSelector((state) => state.todoReducer.error);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTodos());
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          * {error}
+        </div>
+      )}
+      <Header />
+      {isLoading && (
+        <div className="text-center">
+          <img src={loading} alt="LOADING..." />
+        </div>
+      )}
+      <Card results={todos} />
     </div>
   );
-}
+};
 
 export default App;
